@@ -1,37 +1,31 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+	const [fontsLoaded, error] = useFonts({
+		"Outfit-Black": require("../assets/fonts/Outfit-Black.ttf"),
+		"Outfit-Bold": require("../assets/fonts/Outfit-Bold.ttf"),
+		"Outfit-Medium": require("../assets/fonts/Outfit-Medium.ttf"),
+		"Outfit-Regular": require("../assets/fonts/Outfit-Regular.ttf"),
+		"Outfit-SemiBold": require("../assets/fonts/Outfit-SemiBold.ttf"),
+		"Outfit-Thin": require("../assets/fonts/Outfit-Thin.ttf"),
+	});
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+	useEffect(() => {
+		if (error) throw error;
+	}, [fontsLoaded, error]);
 
-  if (!loaded) {
-    return null;
-  }
+	if (!fontsLoaded) {
+		return null;
+	}
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
-  );
+	if (!fontsLoaded && !error) {
+		return null;
+	}
+	return (
+		<Stack>
+			<Stack.Screen name="index" options={{ headerShown: false }} />
+		</Stack>
+	);
 }
